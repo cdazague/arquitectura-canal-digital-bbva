@@ -1,0 +1,63 @@
+Código MMD número 1:
+flowchart TB
+  U[Cliente web / app movil] --> G[API Gateway]
+
+  G --> I[Identidad OAuth2 OIDC MFA]
+
+  G --> C[Microservicio Clientes y Cuentas]
+
+  G --> T[Microservicio Transferencias]
+
+  G --> P[Microservicio Pagos]
+
+  G --> N[Microservicio Notificaciones]
+
+  C --> DB1[(BD Clientes)]
+
+  T --> DB2[(BD Transacciones)]
+
+  P --> DB3[(BD Pagos)]
+
+  T --> A[Adaptador Core Bancario]
+
+  P --> A
+
+  A --> CORE[(Core DB2 / AS400)]
+
+  T --> K[(Kafka)]
+
+  P --> K
+
+  K --> N
+
+  C --> R[(Redis)]
+
+  T --> R
+
+Código MMD número 2:
+flowchart LR
+
+  T[Microservicio Transferencias] --> V{Operacion valida}
+
+  V -->|Si| D[(BD Transacciones)]
+
+  D --> E[Publicar evento TransferenciaCompletada]
+
+  E --> K[(Kafka)]
+
+  K --> N[Servicio Notificaciones]
+
+  K --> A[Servicio Auditoria]
+
+  K --> F[Servicio Antifraude]
+
+  N --> C[SMS / correo / push]
+
+  A --> L[(Repositorio de auditoria)]
+
+  F --> M[Alerta o revision]
+
+  V -->|No| X[Respuesta de rechazo]
+
+  X --> T
+
